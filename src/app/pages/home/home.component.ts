@@ -11,7 +11,12 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   private subscription: Subscription;
 
+  public latestData: any = [];
+  public detail: any = [];
+  public selectedId?: number | null;
+
   constructor(private fleetCompleteService: FleetCompleteService) {
+    this.selectedId = null;
     this.subscription = new Subscription();
   }
 
@@ -19,8 +24,15 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     this.subscription = this.fleetCompleteService.keySubject.subscribe(() => {
       this.fleetCompleteService.getLastData().subscribe(result => {
-
+        this.latestData = result.response;
       });
+    });
+  }
+
+  public showDetail(objectId: number): void {
+    this.selectedId = objectId;
+    this.fleetCompleteService.getRawData(objectId, '', '').subscribe(result => {
+      this.detail = result.response;
     });
   }
 

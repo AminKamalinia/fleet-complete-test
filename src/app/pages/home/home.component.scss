@@ -1,0 +1,11 @@
+@import "../../scss/variables.scss";
+
+table {
+    tbody {
+        tr {
+            &.selected {
+                background-color: $selected-row-background-color;
+            }
+        }
+    }
+}

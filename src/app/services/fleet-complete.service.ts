@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -22,10 +21,10 @@ export class FleetCompleteService {
   }
 
   public getLastData(): Observable<any> {
-    return this.httpClient.get(`${environment.apiUrl}getLastData?key=${this.key}`);
+    return this.httpClient.get(`/getLastData?key=${this.key}&json`);
   }
 
-  public getLatest(): Observable<any> {
-    return this.httpClient.get(`${environment.apiUrl}getRawData?objectId=187286&begTimestamp=2019-09-30&endTimestamp=2019-10-01&key=${this.key}`);
+  public getRawData(objectId: number, begTimestamp: string, endTimestamp: string): Observable<any> {
+    return this.httpClient.get(`/getRawData?objectId=${objectId}&begTimestamp=${begTimestamp}&endTimestamp=${endTimestamp}&key=${this.key}&json`);
   }
 }

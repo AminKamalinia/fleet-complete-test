@@ -1,4 +1,24 @@
-<section></section>
+<section>
+    <div class="table-responsive">
+        <table class="table table-sm table-hover">
+            <thead>
+                <tr>
+                    <th class="text-center">Name</th>
+                    <th class="text-center">Speed</th>
+                    <th class="text-center">Last update</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of latestData" (click)="showDetail(item.objectId)" id="{{item.objectId}}"
+                    [ngClass]="{'selected' : (item.objectId === selectedId)}">
+                    <td class="text-center">{{item.objectName}}</td>
+                    <td class="text-center">{{item.speed}}</td>
+                    <td class="text-center">{{item.timestamp}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
 <aside>
-   
+
 </aside>
