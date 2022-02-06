@@ -1,0 +1,9 @@
+@import "../../scss/variables.scss";
+
+header {
+    border-bottom: 1px solid $border-color;
+
+    form {
+        padding: 1%;
+    }
+}

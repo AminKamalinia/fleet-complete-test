@@ -1,0 +1,12 @@
+<header>
+    <form class="row">
+        <label for="key" class="form-label col-auto">Api Key</label>
+        <div class="col-auto">
+            <input type="text" class="form-control" id="key" name="key" placeholder="(api key goes here)"
+                [(ngModel)]="key" />
+        </div>
+        <div class="col-auto">
+            <button type="button" class="btn btn-primary mb-3" (click)="onClicked()">Go</button>
+        </div>
+    </form>
+</header>
