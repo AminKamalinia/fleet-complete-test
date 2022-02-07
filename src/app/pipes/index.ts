@@ -1,0 +1,1 @@
+export { DateConverterPipe } from './date-converter.pipe';

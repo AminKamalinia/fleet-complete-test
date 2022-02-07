@@ -11,7 +11,13 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   private subscription: Subscription;
 
-  public latestData: any = [];
+  public polygonCoords: Array<google.maps.LatLng> = [];
+  public markerZoom = 12;
+  public markerCirclePolygonZoom = 15;
+  public markers: any = [];
+  public markerCenter: google.maps.LatLngLiteral = { lat: 47.4073, lng: 7.76 };
+
+  public latestData: Array<any> = [];
   public detail: any = [];
   public selectedId?: number | null;
 
@@ -25,6 +31,19 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.subscription = this.fleetCompleteService.keySubject.subscribe(() => {
       this.fleetCompleteService.getLastData().subscribe(result => {
         this.latestData = result.response;
+        this.latestData.forEach(item => {
+          this.markerCenter = { lat: item.latitude, lng: item.longitude };
+          this.markers.push({
+            position: {
+              lat: item.latitude,
+              lng: item.longitude
+            },
+            options: {
+              draggable: false
+            },
+            label: item.objectName
+          });
+        });
       });
     });
   }
