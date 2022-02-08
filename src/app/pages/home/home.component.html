@@ -21,13 +21,6 @@
         </div>
     </section>
     <aside class="col-md-6">
-        <google-map [zoom]="markerZoom" height="400px" width="100%" [center]="markerCenter">
-            <!-- [title]="marker.title" -->
-            <map-marker #markerElem="mapMarker" *ngFor="let marker of markers" [label]="marker.label"
-                [position]="marker.position" [options]="marker.options">
-            </map-marker>
-            <map-info-window *ngFor="let marker of markers" [position]="marker.position">Hello Google Maps
-            </map-info-window>
-        </google-map>
+        <div id="map_driver"></div>
     </aside>
 </div>

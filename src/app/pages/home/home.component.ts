@@ -11,11 +11,21 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   private subscription: Subscription;
 
-  public polygonCoords: Array<google.maps.LatLng> = [];
-  public markerZoom = 12;
-  public markerCirclePolygonZoom = 15;
-  public markers: any = [];
-  public markerCenter: google.maps.LatLngLiteral = { lat: 47.4073, lng: 7.76 };
+  //#region Google map
+  private markerCenter: google.maps.LatLngLiteral = { lat: 47.4073, lng: 7.76 };
+  private mapOptions: google.maps.MapOptions = {
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
+    scrollwheel: true,
+    disableDefaultUI: true,
+    rotateControl: true,
+    streetViewControl: true,
+    zoomControl: true,
+    fullscreenControl: true,
+    mapTypeControl: true,
+    zoom: 3,
+    center: this.markerCenter
+  }
+  //#endregion
 
   public latestData: Array<any> = [];
   public detail: any = [];
@@ -27,21 +37,19 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    const map = new google.maps.Map(document.getElementById('map_driver') as HTMLElement, this.mapOptions);
 
     this.subscription = this.fleetCompleteService.keySubject.subscribe(() => {
       this.fleetCompleteService.getLastData().subscribe(result => {
         this.latestData = result.response;
         this.latestData.forEach(item => {
-          this.markerCenter = { lat: item.latitude, lng: item.longitude };
-          this.markers.push({
+          new google.maps.Marker({
             position: {
               lat: item.latitude,
               lng: item.longitude
             },
-            options: {
-              draggable: false
-            },
-            label: item.objectName
+            label: item.objectName,
+            map: map
           });
         });
       });
