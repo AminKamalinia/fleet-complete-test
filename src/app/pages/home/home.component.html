@@ -1,23 +1,33 @@
 <div class="row">
     <section class="col-md-6">
-        <div class="table-responsive">
-            <table class="table table-sm table-hover">
-                <thead>
-                    <tr>
-                        <th class="text-center">Name</th>
-                        <th class="text-center">Speed</th>
-                        <th class="text-center">Last update</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let item of latestData" (click)="showDetail(item.objectId)" id="{{item.objectId}}"
-                        [ngClass]="{'selected' : (item.objectId === selectedId)}">
-                        <td class="text-center">{{item.objectName}}</td>
-                        <td class="text-center">{{item.speed}} km/h</td>
-                        <td class="text-center">{{item.timestamp | dateConverter}}</td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Name</th>
+                                <th class="text-center">Speed</th>
+                                <th class="text-center">Last update</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of latestData" (click)="onRowClicked(item.objectId)"
+                                id="{{item.objectId}}" [ngClass]="{'selected' : (item.objectId === selectedId)}">
+                                <td class="text-center">{{item.objectName}}</td>
+                                <td class="text-center">{{item.speed}} km/h</td>
+                                <td class="text-center">{{item.timestamp | dateConverter}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-10">
+                <input type="text" ngxDaterangepickerMd [(ngModel)]="selected" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-primary mb-3" (click)="showDetail()">Go</button>
+            </div>
         </div>
     </section>
     <aside class="col-md-6">

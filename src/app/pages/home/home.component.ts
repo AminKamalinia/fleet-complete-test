@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import * as moment from 'moment';
 import { Subscription } from 'rxjs';
 import { FleetCompleteService } from 'src/app/services';
 
@@ -10,7 +11,7 @@ import { FleetCompleteService } from 'src/app/services';
 export class HomeComponent implements OnInit, OnDestroy {
 
   private subscription: Subscription;
-
+  public selected: { startDate: moment.Moment, endDate: moment.Moment };
   //#region Google map
   private markerCenter: google.maps.LatLngLiteral = { lat: 47.4073, lng: 7.76 };
   private mapOptions: google.maps.MapOptions = {
@@ -34,6 +35,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   constructor(private fleetCompleteService: FleetCompleteService) {
     this.selectedId = null;
     this.subscription = new Subscription();
+    this.selected = {
+      startDate: moment.utc(moment.now()).local().subtract(1, 'days'),
+      endDate: moment.utc(moment.now()).local()
+    };
   }
 
   ngOnInit(): void {
@@ -56,11 +61,21 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  public showDetail(objectId: number): void {
+  public onRowClicked(objectId: number): void {
     this.selectedId = objectId;
-    this.fleetCompleteService.getRawData(objectId, '', '').subscribe(result => {
-      this.detail = result.response;
-    });
+  }
+
+  public showDetail(): void {
+    if (this.selectedId !== null && this.selectedId !== undefined) {
+      this.fleetCompleteService.getRawData(
+        this.selectedId ?? 0,
+        moment.utc(this.selected.startDate).local().format('YYYY-MM-DD'),
+        moment.utc(this.selected.endDate).local().format('YYYY-MM-DD')).subscribe(result => {
+          this.detail = result.response;
+        });
+    } else {
+      alert('Please select a row from top table');
+    }
   }
 
   ngOnDestroy(): void {

@@ -9,6 +9,7 @@ import { MainComponent } from './main/main.component';
 import { FleetCompleteService } from '../services';
 import { HeaderComponent } from '../components';
 import { DateConverterPipe } from '../pipes';
+import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 
 
 
@@ -19,6 +20,7 @@ import { DateConverterPipe } from '../pipes';
     GoogleMapsModule,
     HttpClientModule,
     PagesRoutingModule,
+    NgxDaterangepickerMd.forRoot()
   ],
   declarations: [
     HomeComponent,
