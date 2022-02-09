@@ -33,6 +33,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   public latestData: Array<any> = [];
   public detail: Array<any> = [];
   public selectedId?: number | null;
+  public totalDistance: number;
+  public numberOfStops: number;
+  public shortestPossibleDistance: number;
 
   constructor(private fleetCompleteService: FleetCompleteService) {
     this.selectedId = null;
@@ -43,6 +46,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     };
     this.map = null;
     this.vehiclePath = new google.maps.Polyline();
+    this.totalDistance = 0;
+    this.numberOfStops = 0;
+    this.shortestPossibleDistance = 0;
   }
 
   ngOnInit(): void {
@@ -102,7 +108,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           this.vehiclePath.setMap(this.map);
         });
     } else {
-      alert('Please select a row from top table');
+      alert('Please select a row from top data grid.');
     }
   }
 
