@@ -15,6 +15,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   //#region Google map
   private map: any;
   private vehiclePath: google.maps.Polyline;
+  private directionsDisplay: google.maps.DirectionsRenderer;
   private markerCenter: google.maps.LatLngLiteral = { lat: 47.4073, lng: 7.76 };
   private mapOptions: google.maps.MapOptions = {
     mapTypeId: google.maps.MapTypeId.ROADMAP,
@@ -46,6 +47,13 @@ export class HomeComponent implements OnInit, OnDestroy {
     };
     this.map = null;
     this.vehiclePath = new google.maps.Polyline();
+    this.directionsDisplay = new google.maps.DirectionsRenderer({
+      polylineOptions: {
+        strokeColor: '#0000ff',
+        strokeOpacity: 0.3,
+        strokeWeight: 3
+      }
+    });
     this.totalDistance = 0;
     this.numberOfStops = 0;
     this.shortestPossibleDistance = 0;
@@ -77,16 +85,51 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   public showDetail(): void {
     if (this.selectedId !== null && this.selectedId !== undefined) {
+
       this.vehiclePath.setMap(null);
+      this.directionsDisplay.setMap(null);
+
       this.fleetCompleteService.getRawData(
         this.selectedId ?? 0,
         moment.utc(this.selected.startDate).local().format('YYYY-MM-DD'),
         moment.utc(this.selected.endDate).local().format('YYYY-MM-DD')).subscribe(result => {
           this.detail = result.response;
+
+          this.totalDistance = 0;
+          this.shortestPossibleDistance = 0;
           let pathCoordinates: Array<google.maps.LatLng> = [];
+          const waypoints = new Array<google.maps.DirectionsWaypoint>();
+          let origin = new google.maps.LatLng(0, 0);
+          let destination = new google.maps.LatLng(0, 0);
+          let tempEngineStatus = false;
+
           this.detail.forEach(item => {
-            pathCoordinates.push(new google.maps.LatLng(item.Latitude, item.Longitude));
+            const latLng = new google.maps.LatLng(item.Latitude, item.Longitude);
+            destination = latLng;
+            if (item.EngineStatus === true) {
+              tempEngineStatus = true;
+            }
+            if (waypoints.length === 0) {
+              this.totalDistance += item.Distance;
+              origin = latLng;
+              tempEngineStatus = false;
+              waypoints.push({
+                location: latLng,
+                stopover: true
+              });
+            }
+            else if (item.EngineStatus === false && tempEngineStatus === true) {
+              this.totalDistance += item.Distance;
+              tempEngineStatus = false;
+              waypoints.push({
+                location: latLng,
+                stopover: true
+              });
+            }
+            pathCoordinates.push(latLng);
           });
+          this.numberOfStops = waypoints.length;
+          this.totalDistance = this.totalDistance / 1000;
 
           this.vehiclePath = new google.maps.Polyline({
             path: pathCoordinates,
@@ -106,6 +149,30 @@ export class HomeComponent implements OnInit, OnDestroy {
           });
 
           this.vehiclePath.setMap(this.map);
+
+          if (waypoints.length > 0) {
+            const directionsService = new google.maps.DirectionsService();
+            const request: google.maps.DirectionsRequest = {
+              origin: origin,
+              destination: destination,
+              travelMode: google.maps.TravelMode.DRIVING,
+              provideRouteAlternatives: true,
+              waypoints: waypoints,
+              optimizeWaypoints: true
+            };
+
+            this.directionsDisplay.setMap(this.map);
+
+            directionsService.route(request, (response: any, status) => {
+              if (status === google.maps.DirectionsStatus.OK) {
+                this.directionsDisplay.setDirections(response);
+                response.routes[0].legs.forEach((item: any) => {
+                  this.shortestPossibleDistance += item.distance.value;
+                });
+              }
+              this.shortestPossibleDistance = this.shortestPossibleDistance / 1000;
+            });
+          }
         });
     } else {
       alert('Please select a row from top data grid.');
