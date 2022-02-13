@@ -17,18 +17,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   private vehiclePath: google.maps.Polyline;
   private directionsDisplay: google.maps.DirectionsRenderer;
   private markerCenter: google.maps.LatLngLiteral = { lat: 47.4073, lng: 7.76 };
-  private mapOptions: google.maps.MapOptions = {
-    mapTypeId: google.maps.MapTypeId.ROADMAP,
-    scrollwheel: true,
-    disableDefaultUI: true,
-    rotateControl: true,
-    streetViewControl: true,
-    zoomControl: true,
-    fullscreenControl: true,
-    mapTypeControl: true,
-    zoom: 3,
-    center: this.markerCenter
-  }
+  private mapOptions: google.maps.MapOptions;
   //#endregion
 
   public latestData: Array<any> = [];
@@ -45,6 +34,18 @@ export class HomeComponent implements OnInit, OnDestroy {
       startDate: moment.utc(moment.now()).local().subtract(1, 'days'),
       endDate: moment.utc(moment.now()).local()
     };
+    this.mapOptions = {
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+      scrollwheel: true,
+      disableDefaultUI: true,
+      rotateControl: true,
+      streetViewControl: true,
+      zoomControl: true,
+      fullscreenControl: true,
+      mapTypeControl: true,
+      zoom: 3,
+      center: this.markerCenter
+    }
     this.map = null;
     this.vehiclePath = new google.maps.Polyline();
     this.directionsDisplay = new google.maps.DirectionsRenderer({
@@ -99,7 +100,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           this.shortestPossibleDistance = 0;
           let pathCoordinates: Array<google.maps.LatLng> = [];
           const waypoints = new Array<google.maps.DirectionsWaypoint>();
-          let origin = new google.maps.LatLng(0, 0);
+          let origin: any = null;
           let destination = new google.maps.LatLng(0, 0);
           let tempEngineStatus = false;
 
@@ -109,17 +110,11 @@ export class HomeComponent implements OnInit, OnDestroy {
             if (item.EngineStatus === true) {
               tempEngineStatus = true;
             }
-            if (waypoints.length === 0) {
-              this.totalDistance += item.Distance;
+            if (origin == null) {
               origin = latLng;
               tempEngineStatus = false;
-              waypoints.push({
-                location: latLng,
-                stopover: true
-              });
             }
             else if (item.EngineStatus === false && tempEngineStatus === true) {
-              this.totalDistance += item.Distance;
               tempEngineStatus = false;
               waypoints.push({
                 location: latLng,
@@ -129,7 +124,6 @@ export class HomeComponent implements OnInit, OnDestroy {
             pathCoordinates.push(latLng);
           });
           this.numberOfStops = waypoints.length;
-          this.totalDistance = this.totalDistance / 1000;
 
           this.vehiclePath = new google.maps.Polyline({
             path: pathCoordinates,
@@ -149,6 +143,13 @@ export class HomeComponent implements OnInit, OnDestroy {
           });
 
           this.vehiclePath.setMap(this.map);
+
+          const temp = this.vehiclePath.getPath();
+          let tempDistance = 0;
+          for (let i = 0; i < temp.getLength() - 2; i++) {
+            tempDistance += google.maps.geometry.spherical.computeDistanceBetween(temp.getAt(i), temp.getAt(i + 1));
+          }
+          this.totalDistance = (tempDistance / 1000);
 
           if (waypoints.length > 0) {
             const directionsService = new google.maps.DirectionsService();

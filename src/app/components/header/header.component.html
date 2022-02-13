@@ -1,5 +1,5 @@
-<header>
-    <form class="row">
+<header class="row">
+    <form *ngIf="hasGoogleApi === true" class="row">
         <label for="key" class="form-label col-auto">Api Key:</label>
         <div class="col-auto">
             <input type="text" class="form-control" id="key" name="key" placeholder="(api key goes here)"
@@ -7,6 +7,16 @@
         </div>
         <div class="col-auto">
             <button type="button" class="btn btn-primary mb-3" (click)="onClicked()">Go</button>
+        </div>
+    </form>
+    <form *ngIf="hasGoogleApi === false" class="row">
+        <label for="googleApikey" class="form-label col-auto">Google Api Key:</label>
+        <div class="col-md-5">
+            <input type="text" class="form-control" id="googleApikey" name="googleApikey"
+                placeholder="(Google API key goes here)" [(ngModel)]="googleApikey" />
+        </div>
+        <div class="col-auto">
+            <button type="button" class="btn btn-success mb-3" (click)="onGoogleApiClicked()">Go</button>
         </div>
     </form>
 </header>
