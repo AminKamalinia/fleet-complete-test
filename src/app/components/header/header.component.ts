@@ -37,6 +37,6 @@ export class HeaderComponent implements OnInit {
     setInterval(() => {
       this.hasGoogleApi = true;
       this.googleApiHasChanged.emit(true);
-    }, 2000);
+    }, 3000);
   }
 }
