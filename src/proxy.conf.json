@@ -2,15 +2,11 @@
     "/getLastData": {
         "target": "https://app.ecofleet.com/seeme/Api/Vehicles/getLastData",
         "secure": false,
-        "logLevel": "debug",
-        "changeOrigin": true,
-        "pathRewrite": { "^/getLastData": "" }
+        "changeOrigin": true
     },
     "/getRawData": {
         "target": "https://app.ecofleet.com/seeme/Api/Vehicles/getRawData",
         "secure": false,
-        "logLevel": "debug",
-        "changeOrigin": true,
-        "pathRewrite": { "^/getRawData": "" }
+        "changeOrigin": true
     }
 }
