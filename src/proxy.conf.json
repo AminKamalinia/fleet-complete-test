@@ -4,7 +4,7 @@
         "secure": false,
         "changeOrigin": true,
         "pathRewrite": {
-            "^/getLastData": ""
+            "^/getLastData": "https://app.ecofleet.com/seeme/Api/Vehicles/getLastData/getLastData"
         }
     },
     "/getRawData": {
@@ -12,7 +12,7 @@
         "secure": false,
         "changeOrigin": true,
         "pathRewrite": {
-            "^/getRawData": ""
+            "^/getRawData": "https://app.ecofleet.com/seeme/Api/Vehicles/getRawData/getRawData"
         }
     }
 }
